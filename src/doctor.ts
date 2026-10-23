@@ -3,6 +3,7 @@ import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { loadConfig } from "./config.js";
 import { loadSafetyPolicyFile } from "./safety-policy-file.js";
+import { isSupportedNodeVersion } from "./node-version.js";
 
 interface Check { name: string; ok: boolean; detail: string }
 function commandCheck(name: string, command: string, args = ["--version"]): Check {
@@ -14,7 +15,7 @@ async function main(): Promise<void> {
   if (!env.MCP_AUTH_TOKEN && env.MCP_OAUTH_ENABLED !== "true") env.MCP_ALLOW_NO_AUTH = "true";
   const config = loadConfig(env);
   const checks: Check[] = [
-    { name: "Node.js", ok: Number(process.versions.node.split(".")[0]) >= 22, detail: process.version },
+    { name: "Node.js", ok: isSupportedNodeVersion(process.versions.node), detail: `${process.version} (requires ^22.23.4 || ^24.22.1 || ^26.12.1)` },
     commandCheck("Git", "git"), commandCheck("Bash", config.defaultShell), commandCheck("npm", "npm"), commandCheck("Python", "python3"),
   ];
   try {

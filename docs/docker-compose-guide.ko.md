@@ -248,6 +248,13 @@ docker compose up -d
 docker compose ps
 ```
 
+[2026년 10월 Node.js 보안 패치](https://nodejs.org/en/blog/vulnerability/october-2026-security-releases)를
+적용하기 위해 Docker 빌드 및 실행 단계 모두 `node:22.23.4-bookworm-slim`을 사용합니다.
+이미지를 다시 빌드하고 컨테이너를 재생성한 뒤
+`docker compose exec -T cokacremote node --version`이 `v22.23.4`를 출력하는지,
+그리고 `/health`가 정상인지 확인하세요. 기존 컨테이너의 단순 재시작으로는
+취약한 Node.js가 교체되지 않습니다.
+
 서비스와 네트워크를 내리되 OAuth named volume은 유지합니다.
 
 ```bash

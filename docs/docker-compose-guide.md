@@ -250,6 +250,12 @@ docker compose up -d
 docker compose ps
 ```
 
+For the [October 2026 Node.js security release](https://nodejs.org/en/blog/vulnerability/october-2026-security-releases),
+both Docker stages use `node:22.23.4-bookworm-slim`. After rebuilding and
+recreating the service, run `docker compose exec -T cokacremote node --version`
+and verify `v22.23.4`, then check `/health`. Restarting an existing container
+does not replace its vulnerable runtime.
+
 Remove the service and network while retaining the OAuth named volume:
 
 ```bash

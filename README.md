@@ -29,7 +29,7 @@ You can run `cokacremote` continuously on a VPS or EC2 instance and connect to i
 
 ## Quick start
 
-If you already have a Linux server and Node.js 22+, the shortest local test is:
+If you already have a Linux server and a patched Node.js version (22.23.4+, 24.22.1+, or 26.12.1+ within those release lines), the shortest local test is:
 
 ```bash
 git clone https://github.com/kstost/cokacremote.git
@@ -134,7 +134,7 @@ The server provides 20 tools in total. `remove_path` permanently deletes targets
 
 ## Requirements
 
-- Node.js 22 or later and npm
+- Node.js 22.23.4+, 24.22.1+, or 26.12.1+ within those release lines, and npm. For nvm, run `nvm install && nvm use` to use the version in `.nvmrc`.
 - Linux recommended; the provided production deployment examples target systemd and Nginx
 - Git for `apply_patch`
 - OpenSSL for key generation

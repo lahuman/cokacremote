@@ -68,11 +68,17 @@ docker compose down -v
 ## Rebuild
 
 ```bash
-docker compose build --no-cache
+docker compose build --pull --no-cache
 docker compose up -d
+docker compose exec -T cokacremote node --version
 ```
 
 ## Health check
+
+The build and runtime images are pinned to Node.js 22.23.4 for the
+[October 2026 security release](https://nodejs.org/en/blog/vulnerability/october-2026-security-releases).
+Rebuild and recreate existing containers to apply it; restarting an old container
+does not update Node.js. Verify that the command above prints `v22.23.4`.
 
 The HTTP port is bound to localhost only. With the default settings:
 
