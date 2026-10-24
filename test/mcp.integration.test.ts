@@ -1,4 +1,4 @@
-import { mkdtemp, rm } from "node:fs/promises";
+import { access, mkdtemp, rm } from "node:fs/promises";
 import type { AddressInfo } from "node:net";
 import os from "node:os";
 import path from "node:path";
@@ -88,6 +88,49 @@ describe("remote development MCP server", () => {
       body: "{",
     });
     expect(authenticated.status).toBe(400);
+  });
+
+  it("rejects excessive tool input elements before validating or executing the tool", async () => {
+    const client = new Client({ name: "input-limit-test", version: "1.0.0" });
+    const transport = new StreamableHTTPClientTransport(endpoint, {
+      requestInit: { headers: { Authorization: "Bearer integration-secret-0123456789abcdef" } },
+    });
+    await client.connect(transport);
+    try {
+      const result = await client.callTool({
+        name: "write_file",
+        arguments: {
+          path: "must-not-be-written.txt",
+          content: "blocked",
+          extra: { nested: Array(10_000).fill("value") },
+        },
+      });
+      expect(result.isError).toBe(true);
+      expect(JSON.stringify(result.content)).toContain("maximum of 10000 elements");
+      await expect(access(path.join(temporaryDirectory, "must-not-be-written.txt"))).rejects.toThrow();
+      expect((await client.listTools()).tools.length).toBeGreaterThan(0);
+    } finally {
+      await transport.terminateSession();
+      await client.close();
+    }
+  });
+
+  it("rejects requests above the default body limit before file writes", async () => {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        authorization: "Bearer integration-secret-0123456789abcdef",
+        accept: "application/json, text/event-stream",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        jsonrpc: "2.0", id: 100, method: "tools/call",
+        params: { name: "write_file", arguments: { path: "oversized.txt", content: "x".repeat(2 * 1024 * 1024) } },
+      }),
+    });
+    expect(response.status).toBe(400);
+    expect(await response.text()).toContain("request entity too large");
+    await expect(access(path.join(temporaryDirectory, "oversized.txt"))).rejects.toThrow();
   });
 
   it("lists tools and executes script and file workflows", async () => {

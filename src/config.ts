@@ -225,7 +225,7 @@ export function loadConfig(
     defaultCwd,
     defaultShell:
       env.MCP_DEFAULT_SHELL?.trim() || env.SHELL?.trim() || "/bin/bash",
-    maxRequestBody: env.MCP_MAX_REQUEST_BODY?.trim() || "8mb",
+    maxRequestBody: env.MCP_MAX_REQUEST_BODY?.trim() || "2mb",
     maxOutputBytes: parseInteger(
       env.MCP_MAX_OUTPUT_BYTES,
       1024 * 1024,

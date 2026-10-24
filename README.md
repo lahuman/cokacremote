@@ -440,7 +440,7 @@ This verification executes real commands on the target server and creates, modif
 | `MCP_OAUTH_AUTHORIZATION_CODE_TTL_SECONDS` | `300` | One-time authorization code lifetime |
 | `MCP_DEFAULT_CWD` | server startup directory | Base directory for relative paths |
 | `MCP_DEFAULT_SHELL` | `$SHELL` or `/bin/bash` | Default shell for `exec_command` |
-| `MCP_MAX_REQUEST_BODY` | `8mb` | HTTP request body size limit |
+| `MCP_MAX_REQUEST_BODY` | `2mb` | HTTP request body size limit; accommodates the default 1 MiB base64 upload chunk. Increase only when larger tool payloads are required. Tool arguments are also limited to 10,000 combined array elements and object keys. |
 | `MCP_MAX_OUTPUT_BYTES` | `1048576` | Maximum output returned by one tool call |
 | `MCP_MAX_RETAINED_PROCESS_OUTPUT_BYTES` | `4194304` | Retained output per managed process |
 | `MCP_PROCESS_RETENTION_MS` | `3600000` | Retention period for completed processes |

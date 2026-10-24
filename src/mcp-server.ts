@@ -74,6 +74,8 @@ export function createMcpServer(config: AppConfig, services: McpServices): McpSe
     },
     {
       instructions: MCP_SERVER_INSTRUCTIONS,
+      // Bound validation work before Zod parses arrays and records (CVE-2026-111768).
+      maxToolInputElements: 10_000,
       capabilities: { logging: {} },
     },
   );
